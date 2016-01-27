@@ -56,17 +56,17 @@ public class JmsClientKonnector extends SessionBasedClientKonnector implements
 		JmsClientConfiguration l_config = (JmsClientConfiguration) config;
 
 		m_factory = new com.tibco.tibjms.TibjmsQueueConnectionFactory(
-				l_config.serverUrl);
+				l_config.getServerUrl());
 
-		m_destinationQueueName = l_config.destinationQueueName;
+		m_destinationQueueName = l_config.getDestinationQueueName();
 
-		if ((l_config.correlationPattern != null)
-				&& l_config.correlationPattern
-						.equalsIgnoreCase("CorrelationId")) {
+		if ((l_config.getCorrelationPattern() != null)
+				&& l_config.getCorrelationPattern().equalsIgnoreCase(
+						"CorrelationId")) {
 			m_correlationPattern = MessageCorrelationPattern.CorrelationId;
 		}
 
-		m_responseWaitTimeout = l_config.responseWaitTimeout
+		m_responseWaitTimeout = l_config.getResponseWaitTimeout()
 				/ m_responseWaitTimes;
 
 		if (m_responseWaitTimeout == 0)

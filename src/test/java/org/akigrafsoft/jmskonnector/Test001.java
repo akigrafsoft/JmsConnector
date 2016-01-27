@@ -41,8 +41,8 @@ public class Test001 {
 		}
 
 		JmsClientConfiguration config = new JmsClientConfiguration();
-		config.serverUrl = "tcp://corentin.kabira.fr:7222";
-		config.destinationQueueName = "requests";
+		config.setServerUrl("tcp://corentin.kabira.fr:7222");
+		config.setDestinationQueueName("requests");
 
 		try {
 			konnector.configure(config);

@@ -3,21 +3,68 @@ package org.akigrafsoft.jmskonnector;
 import com.akigrafsoft.knetthreads.ExceptionAuditFailed;
 import com.akigrafsoft.knetthreads.konnector.SessionBasedClientKonnectorConfiguration;
 
-public class JmsClientConfiguration extends
+/**
+ * Configuration class for {@link JmspClientKonnector}
+ * <p>
+ * <b>This MUST be a Java bean</b>
+ * </p>
+ * 
+ * @author kmoyse
+ * 
+ */
+public final class JmsClientConfiguration extends
 		SessionBasedClientKonnectorConfiguration {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5875956400137823344L;
 
 	private static String DEFAULT_serverUrl = "tcp://localhost:7222";
 
-	public String serverUrl = DEFAULT_serverUrl;
-	public String destinationQueueName;
-	public String correlationPattern = null;
+	private String serverUrl = DEFAULT_serverUrl;
+	private String destinationQueueName;
+	private String correlationPattern = null;
 
-	public int responseWaitTimeout = 300;
+	private int responseWaitTimeout = 300;
 
-	/*
-	 * public String hostName = null; public int port = -1;
-	 */
+	// ------------------------------------------------------------------------
+	// Java Bean
 
+	public String getServerUrl() {
+		return serverUrl;
+	}
+
+	public void setServerUrl(String serverUrl) {
+		this.serverUrl = serverUrl;
+	}
+
+	public String getDestinationQueueName() {
+		return destinationQueueName;
+	}
+
+	public void setDestinationQueueName(String destinationQueueName) {
+		this.destinationQueueName = destinationQueueName;
+	}
+
+	public String getCorrelationPattern() {
+		return correlationPattern;
+	}
+
+	public void setCorrelationPattern(String correlationPattern) {
+		this.correlationPattern = correlationPattern;
+	}
+
+	public int getResponseWaitTimeout() {
+		return responseWaitTimeout;
+	}
+
+	public void setResponseWaitTimeout(int responseWaitTimeout) {
+		this.responseWaitTimeout = responseWaitTimeout;
+	}
+
+	// ------------------------------------------------------------------------
+	// Configuration
 	@Override
 	public void audit() throws ExceptionAuditFailed {
 		super.audit();
