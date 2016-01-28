@@ -9,6 +9,7 @@ import javax.jms.QueueConnectionFactory;
 import javax.jms.TextMessage;
 
 import com.akigrafsoft.knetthreads.ExceptionDuplicate;
+import com.akigrafsoft.knetthreads.konnector.ExceptionCreateSessionFailed;
 import com.akigrafsoft.knetthreads.konnector.KonnectorConfiguration;
 import com.akigrafsoft.knetthreads.konnector.KonnectorDataobject;
 import com.akigrafsoft.knetthreads.konnector.SessionBasedClientKonnector;
@@ -47,6 +48,11 @@ public class JmsClientKonnector extends SessionBasedClientKonnector implements
 	public JmsClientKonnector(String name) throws ExceptionDuplicate {
 		super(name);
 		m_factory = null;
+	}
+
+	@Override
+	public Class<? extends KonnectorConfiguration> getConfigurationClass() {
+		return JmsClientConfiguration.class;
 	}
 
 	@Override
