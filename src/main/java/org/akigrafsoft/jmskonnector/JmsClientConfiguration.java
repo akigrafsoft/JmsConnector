@@ -4,7 +4,7 @@ import com.akigrafsoft.knetthreads.ExceptionAuditFailed;
 import com.akigrafsoft.knetthreads.konnector.SessionBasedClientKonnectorConfiguration;
 
 /**
- * Configuration class for {@link JmspClientKonnector}
+ * Configuration class for {@link JmsClientKonnector}
  * <p>
  * <b>This MUST be a Java bean</b>
  * </p>
@@ -12,8 +12,7 @@ import com.akigrafsoft.knetthreads.konnector.SessionBasedClientKonnectorConfigur
  * @author kmoyse
  * 
  */
-public final class JmsClientConfiguration extends
-		SessionBasedClientKonnectorConfiguration {
+public final class JmsClientConfiguration extends SessionBasedClientKonnectorConfiguration {
 
 	/**
 	 * 
@@ -69,13 +68,10 @@ public final class JmsClientConfiguration extends
 	public void audit() throws ExceptionAuditFailed {
 		super.audit();
 		if ((serverUrl == null) || serverUrl.equals("")) {
-			throw new ExceptionAuditFailed(
-					"serverUrl must be provided and non empty, default="
-							+ DEFAULT_serverUrl);
+			throw new ExceptionAuditFailed("serverUrl must be provided and non empty, default=" + DEFAULT_serverUrl);
 		}
 		if ((destinationQueueName == null) || destinationQueueName.equals("")) {
-			throw new ExceptionAuditFailed(
-					"serverUrl must be provided and non empty");
+			throw new ExceptionAuditFailed("serverUrl must be provided and non empty");
 		}
 		if ((correlationPattern != null)) {
 			if (!correlationPattern.equalsIgnoreCase("MessageId")
