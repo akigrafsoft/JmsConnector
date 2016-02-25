@@ -1,3 +1,9 @@
+/**
+ * Open-source, by AkiGrafSoft.
+ *
+ * $Id:  $
+ *
+ **/
 package org.akigrafsoft.jmskonnector;
 
 import com.akigrafsoft.knetthreads.ExceptionAuditFailed;

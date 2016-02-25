@@ -1,3 +1,9 @@
+/**
+ * Open-source, by AkiGrafSoft.
+ *
+ * $Id:  $
+ *
+ **/
 package org.akigrafsoft.jmskonnector;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,8 +20,7 @@ import com.akigrafsoft.knetthreads.konnector.KonnectorConfiguration;
 import com.akigrafsoft.knetthreads.konnector.KonnectorDataobject;
 import com.akigrafsoft.knetthreads.konnector.SessionBasedClientKonnector;
 
-public class JmsClientKonnector extends SessionBasedClientKonnector implements
-		javax.jms.MessageListener {
+public class JmsClientKonnector extends SessionBasedClientKonnector implements javax.jms.MessageListener {
 
 	class QueueConn {
 		javax.jms.QueueConnection connection;
@@ -61,19 +66,16 @@ public class JmsClientKonnector extends SessionBasedClientKonnector implements
 
 		JmsClientConfiguration l_config = (JmsClientConfiguration) config;
 
-		m_factory = new com.tibco.tibjms.TibjmsQueueConnectionFactory(
-				l_config.getServerUrl());
+		m_factory = new com.tibco.tibjms.TibjmsQueueConnectionFactory(l_config.getServerUrl());
 
 		m_destinationQueueName = l_config.getDestinationQueueName();
 
 		if ((l_config.getCorrelationPattern() != null)
-				&& l_config.getCorrelationPattern().equalsIgnoreCase(
-						"CorrelationId")) {
+				&& l_config.getCorrelationPattern().equalsIgnoreCase("CorrelationId")) {
 			m_correlationPattern = MessageCorrelationPattern.CorrelationId;
 		}
 
-		m_responseWaitTimeout = l_config.getResponseWaitTimeout()
-				/ m_responseWaitTimes;
+		m_responseWaitTimeout = l_config.getResponseWaitTimeout() / m_responseWaitTimes;
 
 		if (m_responseWaitTimeout == 0)
 			m_responseWaitTimeout = 5;
@@ -94,8 +96,7 @@ public class JmsClientKonnector extends SessionBasedClientKonnector implements
 			if (m_correlationPattern == MessageCorrelationPattern.CorrelationId) {
 				l_id = dataobject.getMatchingId();
 				if ((l_id == null) || (l_id.equals(""))) {
-					l_id = "ID:" + this.getName().toUpperCase() + ":"
-							+ session.getId() + ":"
+					l_id = "ID:" + this.getName().toUpperCase() + ":" + session.getId() + ":"
 							+ m_counter.incrementAndGet();
 				}
 				message.setJMSCorrelationID(l_id);
@@ -105,8 +106,10 @@ public class JmsClientKonnector extends SessionBasedClientKonnector implements
 
 			message.setText(dataobject.outboundBuffer);
 
-			// System.out.println("getJMSMessageID = "+message.getJMSMessageID());
-			// System.out.println("getJMSCorrelationID = "+message.getJMSCorrelationID());
+			// System.out.println("getJMSMessageID =
+			// "+message.getJMSMessageID());
+			// System.out.println("getJMSCorrelationID =
+			// "+message.getJMSCorrelationID());
 
 			// m_messageMap.put(l_id, dataobject);
 
@@ -139,10 +142,8 @@ public class JmsClientKonnector extends SessionBasedClientKonnector implements
 			// this is very bad for performance as this locks a session waiting
 			// for a response and if time expires no one will retrieve the
 			// message later on.
-			javax.jms.QueueReceiver receiver = jms_session.session
-					.createReceiver(jms_session.destination,
-							"JMSCorrelationID='" + message.getJMSMessageID()
-									+ "'");
+			javax.jms.QueueReceiver receiver = jms_session.session.createReceiver(jms_session.destination,
+					"JMSCorrelationID='" + message.getJMSMessageID() + "'");
 			Message responseMessage = null;
 			for (int i = 0; i < m_responseWaitTimes; i++) {
 				responseMessage = receiver.receive(m_responseWaitTimeout);
@@ -156,11 +157,8 @@ public class JmsClientKonnector extends SessionBasedClientKonnector implements
 			receiver.close();
 
 			if (responseMessage == null) {
-				notifyNetworkError(
-						dataobject,
-						session,
-						"waiting time expired for message id<"
-								+ message.getJMSMessageID() + ">");
+				notifyNetworkError(dataobject, session,
+						"waiting time expired for message id<" + message.getJMSMessageID() + ">");
 				return;
 			}
 
@@ -170,24 +168,19 @@ public class JmsClientKonnector extends SessionBasedClientKonnector implements
 					dataobject.inboundBuffer = txtMsg.getText();
 				} catch (JMSException e) {
 					String reason = "getText failed(" + e.getMessage() + ")";
-					ActivityLogger.warn(buildActivityLog(
-							dataobject.getMessage(), reason));
+					ActivityLogger.warn(buildActivityLog(dataobject.getMessage(), reason));
 					notifyNetworkError(dataobject, session, reason);
 					return;
 				}
 			} else {
-				ActivityLogger.warn(buildActivityLog(dataobject.getMessage(),
-						"responseMessage is not a TextMessage"));
-				notifyNetworkError(dataobject, session,
-						"responseMessage is not a TextMessage");
+				ActivityLogger.warn(buildActivityLog(dataobject.getMessage(), "responseMessage is not a TextMessage"));
+				notifyNetworkError(dataobject, session, "responseMessage is not a TextMessage");
 				return;
 			}
 
 			if (ActivityLogger.isInfoEnabled())
-				ActivityLogger
-						.info(buildActivityLog(dataobject.getMessage(),
-								"response received <"
-										+ dataobject.inboundBuffer + ">"));
+				ActivityLogger.info(buildActivityLog(dataobject.getMessage(),
+						"response received <" + dataobject.inboundBuffer + ">"));
 
 			notifyExecuteCompleted(dataobject);
 		} catch (JMSException e) {
@@ -208,14 +201,12 @@ public class JmsClientKonnector extends SessionBasedClientKonnector implements
 			l_id = responseMessage.getJMSCorrelationID();
 			dataobject = m_messageMap.remove(l_id);
 		} catch (JMSException e) {
-			ActivityLogger.warn(buildActivityLog(null,
-					"getJMSCorrelationID failed(" + e.getMessage() + ")"));
+			ActivityLogger.warn(buildActivityLog(null, "getJMSCorrelationID failed(" + e.getMessage() + ")"));
 			return;
 		}
 
 		if (dataobject == null) {
-			ActivityLogger.warn(buildActivityLog(null,
-					"dataobject not found for JMSCorrelationID<" + l_id + ">"));
+			ActivityLogger.warn(buildActivityLog(null, "dataobject not found for JMSCorrelationID<" + l_id + ">"));
 			return;
 		}
 
@@ -226,20 +217,17 @@ public class JmsClientKonnector extends SessionBasedClientKonnector implements
 			try {
 				dataobject.inboundBuffer = txtMsg.getText();
 			} catch (JMSException e) {
-				ActivityLogger.warn(buildActivityLog(dataobject.getMessage(),
-						"getText failed(" + e.getMessage() + ")"));
+				ActivityLogger
+						.warn(buildActivityLog(dataobject.getMessage(), "getText failed(" + e.getMessage() + ")"));
 				return;
 			}
 
 			if (ActivityLogger.isInfoEnabled())
-				ActivityLogger
-						.info(buildActivityLog(dataobject.getMessage(),
-								"onMessage received <"
-										+ dataobject.inboundBuffer + ">"));
+				ActivityLogger.info(buildActivityLog(dataobject.getMessage(),
+						"onMessage received <" + dataobject.inboundBuffer + ">"));
 
 		} else {
-			ActivityLogger.warn(buildActivityLog(dataobject.getMessage(),
-					"responseMessage is not a TextMessage"));
+			ActivityLogger.warn(buildActivityLog(dataobject.getMessage(), "responseMessage is not a TextMessage"));
 			return;
 		}
 
@@ -247,27 +235,22 @@ public class JmsClientKonnector extends SessionBasedClientKonnector implements
 	}
 
 	@Override
-	protected void createSession(Session session)
-			throws ExceptionCreateSessionFailed {
+	protected void createSession(Session session) throws ExceptionCreateSessionFailed {
 
 		QueueConn jms_session = new QueueConn();
 
 		try {
 			jms_session.connection = m_factory.createQueueConnection();
-			jms_session.session = jms_session.connection.createQueueSession(
-					false, javax.jms.Session.AUTO_ACKNOWLEDGE);
+			jms_session.session = jms_session.connection.createQueueSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
 			jms_session.producer = jms_session.session
-					.createProducer(jms_session.session
-							.createQueue(m_destinationQueueName));
+					.createProducer(jms_session.session.createQueue(m_destinationQueueName));
 
-			jms_session.destination = jms_session.session
-					.createTemporaryQueue();
+			jms_session.destination = jms_session.session.createTemporaryQueue();
 
 			if (m_correlationPattern == MessageCorrelationPattern.CorrelationId) {
 				// For correlationId pattern a listener common to all sessions
 				// is used
-				jms_session.consumer = jms_session.session
-						.createConsumer(jms_session.destination);
+				jms_session.consumer = jms_session.session.createConsumer(jms_session.destination);
 				jms_session.consumer.setMessageListener(this);
 			}
 		} catch (JMSException e) {
